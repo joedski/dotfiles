@@ -12,8 +12,6 @@ export PYTHONSTARTUP=$HOME/.pythonrc
 
 #### Node and NVM
 
-# command -v nvm >/dev/null 2>&1 || "nvm not found.  Install nvm rather than trying to manage Node.js versions directly."
-
 export NVM_DIR="$HOME/.nvm"
 # This loads nvm
 [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh" || echo "$NVM_DIR/nvm.sh not found."
