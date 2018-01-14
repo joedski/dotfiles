@@ -9,6 +9,7 @@
     ~/.bash:
     ~/.bash_profile:
     ~/.bashrc:
+    ~/.editorconfig:
     ~/.gitconfig:
     ~/.gitignore_global:
     ~/.pythonrc:
