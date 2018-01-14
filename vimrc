@@ -1,0 +1,3 @@
+" TODO: Set up some things...
+
+set nocompatible " not vi compatible

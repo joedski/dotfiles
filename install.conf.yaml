@@ -1,3 +1,30 @@
-- clean: []
-- link: {}
-- shell: []
+- defaults:
+    link:
+      create: true
+      relink: true
+
+- clean: ['~']
+
+- link:
+    ~/.bash:
+    ~/.bash_profile:
+    ~/.bashrc:
+    ~/.gitconfig:
+    ~/.gitignore_global:
+    ~/.pythonrc:
+    ~/.shell:
+    ~/.vim:
+    ~/.vimrc:
+
+- shell:
+  # the following have to run after linking ~/.gitconfig
+  # Used for things like vim plugins.
+  - git update-submodules
+  # - >-
+  #   git cleanall -f
+  #   emacs.d/vendor/
+  #   irssi/scripts/vendor/
+  #   jupyter/nbextensions/
+  #   shell/plugins/
+  #   vim/bundle/
+  #   zsh/plugins/
