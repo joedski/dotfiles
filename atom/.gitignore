@@ -1,0 +1,12 @@
+blob-store
+.node-gyp
+blob-store
+packages
+packages.cson
+recovery
+compile-cache
+.apmrc
+.apm
+github.cson
+package-deps-state.json
+storage

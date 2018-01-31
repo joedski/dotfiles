@@ -1,0 +1,84 @@
+"*":
+  core:
+    customFileTypes:
+      "source.ini": [
+        ".buckconfig"
+        ".hgrc"
+        ".flowconfig"
+      ]
+      "source.json": [
+        ".arcconfig"
+        "BUCK.autodeps"
+      ]
+      "source.python": [
+        "BUCK"
+      ]
+    destroyEmptyPanes: false
+    disabledPackages: [
+      "language-gfm"
+      "react"
+      "nuclide"
+      "flow-ide"
+      "hyperclick"
+      "linter"
+      "linter-stylelint"
+      "ide-typescript"
+    ]
+    packagesWithKeymapsDisabled: [
+      "emmet"
+      "auto-indent"
+    ]
+    telemetryConsent: "limited"
+    themes: [
+      "one-dark-ui"
+      "gruvbox-plus-syntax"
+    ]
+  docblockr:
+    lower_case_primitives: true
+  editor:
+    fontSize: 9
+    preferredLineLength: 100
+    showIndentGuide: true
+    showInvisibles: true
+  "exception-reporting":
+    userId: "59eb8e27-c30d-8e7b-537f-52bb9c0f1589"
+  "gruvbox-plus-syntax": {}
+  "ide-flowtype":
+    tryFlowBin: true
+  "language-babel": {}
+  linter:
+    disabledProviders: [
+      "stylelint"
+    ]
+    lintOnChange: false
+    lintOnChangeInterval: 5000
+  "linter-ui-default":
+    panelHeight: 124
+  nuclide:
+    "nuclide-file-tree": {}
+    "nuclide-working-sets":
+      workingSets: [
+        {
+          name: "apphub site"
+          active: true
+          uris: [
+            "/Users/josephsikorski/Documents/Projects/apphub/apphub-site"
+          ]
+        }
+        {
+          name: "apphub api"
+          active: true
+          uris: [
+            "/Users/josephsikorski/Documents/Projects/apphub/apphub-api"
+          ]
+        }
+        {
+          name: "apphub musing"
+          active: true
+          uris: [
+            "/Users/josephsikorski/Documents/Projects/apphub/Musing"
+          ]
+        }
+      ]
+  welcome:
+    showOnStartup: false
