@@ -52,8 +52,7 @@
     ]
     lintOnChange: false
     lintOnChangeInterval: 5000
-  "linter-ui-default":
-    panelHeight: 124
+  "linter-ui-default": {}
   nuclide:
     "nuclide-file-tree": {}
     "nuclide-working-sets":
