@@ -23,6 +23,7 @@
       "linter"
       "linter-stylelint"
       "ide-typescript"
+      "fast-eslint"
     ]
     packagesWithKeymapsDisabled: [
       "emmet"
@@ -36,12 +37,14 @@
   docblockr:
     lower_case_primitives: true
   editor:
+    fontFamily: "\"Fira Code\""
     fontSize: 9
     preferredLineLength: 100
     showIndentGuide: true
     showInvisibles: true
   "exception-reporting":
     userId: "59eb8e27-c30d-8e7b-537f-52bb9c0f1589"
+  "fast-eslint": {}
   "gruvbox-plus-syntax": {}
   "ide-flowtype":
     tryFlowBin: true
@@ -52,6 +55,17 @@
     ]
     lintOnChange: false
     lintOnChangeInterval: 5000
+  "linter-eslint":
+    lintHtmlFiles: true
+    scopes: [
+      "source.js"
+      "source.js.embedded.html"
+      "text.html.vue"
+      "source.jsx"
+      "source.js.jsx"
+      "source.babel"
+      "source.js-semantic"
+    ]
   "linter-ui-default":
     panelHeight: 69
   nuclide:
