@@ -1,6 +1,8 @@
 My Atom Config
 ==============
 
+> NOTE: The `grep .` seen in places is to skip empty lines.
+
 Helpful commands:
 - Install remote list: `apm install --packages-file ~/.atom/packages-list`
 - See what packages are out of date: `apm upgrade --list` (And update them if so desired)
