@@ -61,6 +61,7 @@
   poh = push origin HEAD
   pohsu = !git push origin HEAD && git set-upstream
   is-working-directory-clean = !git diff-index --quiet HEAD --
+  test-merge = merge --no-commit --no-ff
 
 [diff]
   mnemonicPrefix = true
