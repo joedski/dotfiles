@@ -27,6 +27,9 @@ source ~/.bash/prompt.bash
 # Plugins
 source ~/.bash/plugins.bash
 
+# Custom commands
+source ~/.bash/bin.bash
+
 
 # Allow local customizations in the ~/.shell_local_after file
 if [ -f ~/.shell_local_after ]; then
