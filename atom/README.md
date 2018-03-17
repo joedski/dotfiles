@@ -16,3 +16,10 @@ Helpful commands:
     - Using `apm uninstall` to remove them.
 - See currently disabled packages:
   - `diff <(apm list --bare --installed | sort | grep .) <(apm list --bare --installed --enabled | sort | grep .) | grep '^<' | sed '/^< /s///; /@.*$/ s///'`
+
+Actual commands used:
+- Update Packages File: Updates the Packages File to the list of currently installed and enabled packages.
+- Sync: Installs the packages listed in the Packages File that are not currently installed.
+  - NOTE: May leave old versions.  Should probably run Update afterwards.
+- Update: Updates currently installed packages then updates the Packages File.
+- Disable Unlisted: Disables any packages not listed in the Packages File.
