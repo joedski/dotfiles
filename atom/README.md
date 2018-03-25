@@ -23,3 +23,4 @@ Actual commands used:
   - NOTE: May leave old versions.  Should probably run Update afterwards.
 - Update: Updates currently installed packages then updates the Packages File.
 - Disable Unlisted: Disables any packages not listed in the Packages File.
+- Uninstall Disabled: Uninstalls any packages that are currently disabled.  Mostly for cleaning up lists.
