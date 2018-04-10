@@ -11,6 +11,7 @@
     ~/.bash_profile:
     ~/.bashrc:
     ~/.editorconfig:
+    ~/.eslintrc.js:
     ~/.gitconfig:
     ~/.gitignore_global:
     ~/.pythonrc:
@@ -22,6 +23,7 @@
   # the following have to run after linking ~/.gitconfig
   # Used for things like vim plugins.
   - git update-submodules
+  - echo "Be sure to run 'npm install -g eslint@^3 babel-eslint@^4' if you haven't already"'!'""
   # - >-
   #   git cleanall -f
   #   emacs.d/vendor/
