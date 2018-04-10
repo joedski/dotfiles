@@ -3,7 +3,7 @@
 # reposync - Simple way to sync repos in a folder.
 
 function reposync_help() {
-  echo <<REPOSYNC_HELP
+  cat <<REPOSYNC_HELP
 List or pull git repos in a dir.
 
   reposync list <dir>
@@ -158,12 +158,13 @@ case $1 in
     reposync_sync $2
     ;;
 
-  ( help )
+  ( help | --help | -h )
     reposync_help
     ;;
 
   ( '' )
     echo "Please enter a command."
+    echo
     reposync_help
     ;;
 
