@@ -21,8 +21,10 @@ language-vba@0.2.5
 language-vue@0.23.1
 linter-eslint@8.4.1
 linter-ui-default@1.7.1
+linter@2.0.0
 markdown-scroll-sync@2.1.2
 markdown-writer@2.7.3
 oceanic-next@1.0.0
+split-diff@1.5.2
 trailing-spaces@0.4.0
 xml-formatter@0.11.0
