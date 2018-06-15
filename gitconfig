@@ -125,5 +125,8 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+
+# Not actually sure where this came from... or how long it's been there.
+# But it doesn't seem to be affecting access at work?
 [url "https://"]
-	insteadOf = git://
+  insteadOf = git://
