@@ -1,6 +1,42 @@
 My Atom Config
 ==============
 
+
+
+## Command Flows
+
+
+### Initialize a New System
+
+```sh
+bash ~/.atom/commands/install-packages.sh
+```
+
+
+### Update Packages and Update Packages File
+
+```sh
+apm update
+bash ~/.atom/commands/update-packages-file.sh
+```
+
+
+### Soft-Sync Packages by Disabling Unlisted and Enabling Listed
+
+```sh
+bash ~/.atom/commands/disable-unlisted-enable-listed.sh
+```
+
+
+#### Hard-Sync Packages by Uninstalling Unlisted
+
+```sh
+bash ~/.atom/commands/disable-unlisted-enable-listed.sh
+bash ~/.atom/commands/uninstall-disabled.sh
+```
+
+
+
 > NOTE: The `grep .` seen in places is to skip empty lines.
 
 Helpful commands:
