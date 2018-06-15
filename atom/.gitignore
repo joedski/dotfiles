@@ -10,3 +10,6 @@ compile-cache
 github.cson
 package-deps-state.json
 storage
+
+# temp files for split-diff
+split-diff
