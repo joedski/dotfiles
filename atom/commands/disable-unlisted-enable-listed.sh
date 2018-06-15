@@ -1,11 +1,13 @@
 #!/bin/bash
 
-diff <(apm list --bare --installed | sort | grep .) <(grep . ~/.atom/packages-file) \
+DIFF_PACKAGES=~/.atom/commands/diff-packages.sh
+
+$DIFF_PACKAGES installed listed \
   | grep '^<' \
   | sed '/^< /s///; /@.*$/ s///' \
   | xargs apm disable
 
-diff <(apm list --bare --installed | sort | grep .) <(grep . ~/.atom/packages-file) \
+$DIFF_PACKAGES installed listed \
   | grep '^>' \
   | sed '/^> /s///; /@.*$/ s///' \
   | xargs apm enable
