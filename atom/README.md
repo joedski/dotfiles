@@ -20,6 +20,14 @@ apm update
 bash ~/.atom/commands/update-packages-file.sh
 ```
 
+### Sync Local with Remote
+
+```sh
+bash ~/.atom/commands/install-listed-but-not-yet-installed.sh
+apm update
+bash ~/.atom/commands/disable-unlisted-enable-listed.sh
+```
+
 
 ### Soft-Sync Packages by Disabling Unlisted and Enabling Listed
 
