@@ -5,6 +5,8 @@ My Atom Config
 
 ## Command Flows
 
+Since these all use `apm`, be sure to start Atom, then restart it after any package installation/uninstallation.
+
 
 ### Initialize a New System
 
@@ -36,7 +38,7 @@ bash ~/.atom/commands/disable-unlisted-enable-listed.sh
 ```
 
 
-#### Hard-Sync Packages by Uninstalling Unlisted
+### Hard-Sync Packages by Uninstalling Unlisted
 
 ```sh
 bash ~/.atom/commands/disable-unlisted-enable-listed.sh
@@ -44,6 +46,22 @@ bash ~/.atom/commands/uninstall-disabled.sh
 ```
 
 
+### See a Particular List of Packages
+
+```sh
+# show installed.
+bash ~/.atom/commands/show-packages.sh installed
+# show listed.
+bash ~/.atom/commands/show-packages.sh listed
+# show disabled.
+bash ~/.atom/commands/show-packages.sh disabled
+# show help.
+bash ~/.atom/commands/show-packages.sh
+```
+
+
+
+## Old Notes
 
 > NOTE: The `grep .` seen in places is to skip empty lines.
 
