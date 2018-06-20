@@ -30,6 +30,9 @@ source ~/.bash/plugins.bash
 # Custom commands
 source ~/.bash/bin.bash
 
+# Check for some utilities I find useful and tell me if I don't have them installed yet.
+bash ~/.bash/check-for-useful-tools.bash
+
 
 # Allow local customizations in the ~/.shell_local_after file
 if [ -f ~/.shell_local_after ]; then
