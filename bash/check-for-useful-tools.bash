@@ -10,5 +10,5 @@ USEFUL_TOOLS=(
 )
 
 for x in "${USEFUL_TOOLS[@]}"; do
-  type "$x" || echo "Missing useful tool: ${x}"
+  type "$x" >/dev/null 2>&1 || echo "Missing useful tool: ${x}"
 done
