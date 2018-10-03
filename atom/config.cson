@@ -49,7 +49,8 @@
   "exception-reporting":
     userId: "59eb8e27-c30d-8e7b-537f-52bb9c0f1589"
   "fast-eslint": {}
-  "gruvbox-plus-syntax": {}
+  "gruvbox-plus-syntax":
+    contrast: "Hard"
   "ide-flowtype":
     tryFlowBin: true
   "language-babel": {}
@@ -76,22 +77,22 @@
     "nuclide-working-sets":
       workingSets: [
         {
-          name: "apphub site"
           active: true
+          name: "apphub site"
           uris: [
             "/Users/josephsikorski/Documents/Projects/apphub/apphub-site"
           ]
         }
         {
-          name: "apphub api"
           active: true
+          name: "apphub api"
           uris: [
             "/Users/josephsikorski/Documents/Projects/apphub/apphub-api"
           ]
         }
         {
-          name: "apphub musing"
           active: true
+          name: "apphub musing"
           uris: [
             "/Users/josephsikorski/Documents/Projects/apphub/Musing"
           ]
