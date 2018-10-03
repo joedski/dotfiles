@@ -49,6 +49,8 @@ fi
 
 USER_ENTRY=$(echo "$USER_LIST" | grep -s "$INPUT")
 
+# echoing an empty string without -n is treated as 1 line by wc,
+# so just directly testing if it's empty.
 if [[ -z "$USER_ENTRY" ]]; then
   echo 'No matching user entries'
   exit 1
