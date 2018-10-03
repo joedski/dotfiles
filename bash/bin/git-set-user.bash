@@ -39,7 +39,7 @@ if [[ -f ~/.gituserlist.local ]]; then
       | sed -E 's/^[><] //'
   )
 else
-  USER_LIST=$(sort ~/.gituserlist)
+  USER_LIST=$(sort ~/.gituserlist | grep '.')
 fi
 
 if [[ "$INPUT" = '--list' || "$INPUT" = '-l' ]]; then
