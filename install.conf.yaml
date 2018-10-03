@@ -13,6 +13,7 @@
     ~/.editorconfig:
     ~/.eslintrc.js:
     ~/.gitconfig:
+    ~/.gituserlist:
     ~/.gitignore_global:
     ~/.pythonrc:
     ~/.shell:

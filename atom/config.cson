@@ -28,6 +28,7 @@
       "linter-stylelint"
       "ide-typescript"
       "fast-eslint"
+      "ide-flowtype"
     ]
     packagesWithKeymapsDisabled: [
       "emmet"
@@ -71,7 +72,9 @@
       "source.babel"
       "source.js-semantic"
     ]
-  "linter-ui-default": {}
+  "linter-ui-default":
+    panelHeight: 124
+    showPanel: true
   nuclide:
     "nuclide-file-tree": {}
     "nuclide-working-sets":

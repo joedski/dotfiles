@@ -62,6 +62,8 @@
   pohsu = !git push origin HEAD && git set-upstream
   is-working-directory-clean = !git diff-index --quiet HEAD --
   test-merge = merge --no-commit --no-ff
+  # manage users because bluh
+  set-user = !bash ~/.dotfiles/bash/bin/git-set-user.bash
 
 [diff]
   mnemonicPrefix = true

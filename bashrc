@@ -32,6 +32,8 @@ source ~/.bash/bin.bash
 
 # Check for some utilities I find useful and tell me if I don't have them installed yet.
 bash ~/.bash/check-for-useful-tools.bash
+# Notices for myself...
+bash ~/.bash/notices.bash
 
 
 # Allow local customizations in the ~/.shell_local_after file
