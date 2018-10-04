@@ -73,7 +73,7 @@
       "source.js-semantic"
     ]
   "linter-ui-default":
-    panelHeight: 124
+    panelHeight: 69
     showPanel: true
   nuclide:
     "nuclide-file-tree": {}

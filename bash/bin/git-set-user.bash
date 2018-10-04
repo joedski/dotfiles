@@ -23,6 +23,19 @@ Important Files
 
   The .gituserlist.local file is optional, but recommended.
 
+  These files should on each line have a name and email pair
+  in the format of:
+
+    \${NAME} <\${EMAIL}>
+
+  For example, 2 entries:
+
+    Joseph Sikorski <joedski@gmail.com>
+    Joe Sikorski <joe@somewhere.com>
+
+  NOTE: No escaping is processed, all characters will be used
+  literally as entered.
+
 HELP
   exit 0
 fi
@@ -32,15 +45,11 @@ if [[ ! -f ~/.gituserlist ]]; then
   exit 1
 fi
 
-if [[ -f ~/.gituserlist.local ]]; then
-  USER_LIST=$(
-    diff <(sort ~/.gituserlist) <(sort ~/.gituserlist.local) \
-      | grep -E '^[><] ' \
-      | sed -E 's/^[><] //'
-  )
-else
-  USER_LIST=$(sort ~/.gituserlist | grep '.')
-fi
+USER_LIST=$(
+  diff <(sort ~/.gituserlist | grep .) <(sort ~/.gituserlist.local 2>/dev/null | grep .) \
+    | grep -E '^[><] ' \
+    | sed -E 's/^[><] //'
+)
 
 if [[ "$INPUT" = '--list' || "$INPUT" = '-l' ]]; then
   echo "$USER_LIST"
