@@ -2,11 +2,12 @@
 
 INPUT=$1
 
-if [[ -z "$INPUT" || "$INPUT" = '--help' || "$INPUT" = '-h' ]]; then
+function show-help() {
   cat <<HELP
 
 Usage
 
+  git set-user
   git set-user --list
   git set-user -l
     see available users
@@ -33,28 +34,50 @@ Important Files
     Joseph Sikorski <joedski@gmail.com>
     Joe Sikorski <joe@somewhere.com>
 
-  NOTE: No escaping is processed, all characters will be used
+  NOTE: No escaping occurs, all characters will be used
   literally as entered.
 
 HELP
+}
+
+function get-user-list() {
+  if [[ ! -f ~/.gituserlist ]]; then
+    echo "~/.gituserlist not found"
+    exit 1
+  fi
+
+  USER_LIST=$(
+    diff <(sort ~/.gituserlist | grep .) <(sort ~/.gituserlist.local 2>/dev/null | grep .) \
+      | grep -E '^[><] ' \
+      | sed -E 's/^[><] //'
+  )
+}
+
+function list-users() {
+  get-user-list
+
+  echo "Users:"
+  echo "$USER_LIST" | sed 's/^/ - /'
+}
+
+if [[ -z "$INPUT" ]]; then
+  list-users
+  echo
+  echo 'Use -h for help.'
   exit 0
 fi
 
-if [[ ! -f ~/.gituserlist ]]; then
-  echo "~/.gituserlist not found"
-  exit 1
+if [[ "$INPUT" = '--help' || "$INPUT" = '-h' ]]; then
+  show-help
+  exit 0
 fi
-
-USER_LIST=$(
-  diff <(sort ~/.gituserlist | grep .) <(sort ~/.gituserlist.local 2>/dev/null | grep .) \
-    | grep -E '^[><] ' \
-    | sed -E 's/^[><] //'
-)
 
 if [[ "$INPUT" = '--list' || "$INPUT" = '-l' ]]; then
-  echo "$USER_LIST"
+  list-users
   exit 0
 fi
+
+get-user-list
 
 USER_ENTRY=$(echo "$USER_LIST" | grep -s "$INPUT")
 
