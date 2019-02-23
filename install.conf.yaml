@@ -21,6 +21,11 @@
     ~/.vimrc:
 
 - shell:
+  # Kinda lame env detection...
+  # Windows path is "%APPDATA%\Sublime Text 3\Packages\User" but my setup stuff is all in bash...
+  - bash ~/.dotfiles/install.sublime-text-3.sh
+
+- shell:
   # the following have to run after linking ~/.gitconfig
   # Used for things like vim plugins.
   - git update-submodules
