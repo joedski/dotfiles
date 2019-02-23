@@ -1,0 +1,10 @@
+{
+	"extensions":
+	[
+		"jsx",
+		"flow",
+		"snap",
+		"mjsx",
+		"js"
+	]
+}

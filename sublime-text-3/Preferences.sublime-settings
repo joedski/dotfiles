@@ -1,0 +1,15 @@
+{
+	"color_scheme": "Packages/gruvbox/gruvbox (Dark) (Medium).tmTheme",
+	"font_size": 10,
+	"highlight_unicode_color_name": "comment",
+	"ignored_packages":
+	[
+		"CoffeeComplete Plus (Autocompletion)",
+		"Color Scheme - Default",
+		"JavaScript",
+		"Vintage"
+	],
+	"tab_size": 2,
+	"theme": "gruvbox (Dark) (Soft).sublime-theme",
+	"translate_tabs_to_spaces": true
+}

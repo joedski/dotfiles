@@ -1,0 +1,31 @@
+ColorPicker
+Color Highlighter
+
+*.last-run
+Character Table/*
+
+bh_unicode_properties.cache
+FileHistory_*
+Package Control.cache
+Package Control.merged-ca-bundle
+Package Control.system-ca-bundle
+Package Control.user-ca-bundle
+pubring.gpg~
+secring.gpg
+oscrypto-ca-bundle.crt
+SublimeConfig.sublime-workspace
+
+FileHistory.json
+LaTeXing.sublime-license
+Sublimerge.sublime-license
+Gist.sublime-settings
+SublimeGit.sublime-settings
+SublimeGit.sublime-license
+Evernote.sublime-settings
+/Projects/library.json
+__pycache__
+*.sublime-workspace
+.SublimeREPLHistory
+todo.md
+Projects/
+

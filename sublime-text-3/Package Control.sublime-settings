@@ -1,0 +1,47 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"ActionScript 3",
+		"ApacheConf",
+		"Babel",
+		"Better CoffeeScript",
+		"Case Conversion",
+		"CodeFormatter",
+		"CoffeeComplete Plus (Autocompletion)",
+		"DocBlockr",
+		"EditorConfig",
+		"Elm Language Support",
+		"Emmet",
+		"ESLint-Formatter",
+		"Gitignore",
+		"gruvbox",
+		"Handlebars",
+		"Increment Selection",
+		"Incrementor",
+		"INI",
+		"Jade",
+		"JSCS-Formatter",
+		"JsFormat",
+		"JSON Reindent",
+		"LESS",
+		"Markdown Extended",
+		"Oceanic Next Color Scheme",
+		"Package Control",
+		"PEG.js",
+		"Sass",
+		"SublimeLinter",
+		"SublimeLinter-contrib-standard",
+		"SublimeLinter-eslint",
+		"SublimeLinter-json",
+		"Terminus",
+		"Theme - Soda",
+		"Theme - SoDaReloaded",
+		"TypeScript",
+		"Unicode Character Highlighter",
+		"Vue Syntax Highlight"
+	]
+}

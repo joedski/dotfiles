@@ -1,0 +1,10 @@
+{
+	"syntaxProfiles": {
+		"html": {
+			"attr_quotes": "double"
+		},
+		"jsx": {
+			"attr_quotes": "double"
+		}
+	}
+}

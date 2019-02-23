@@ -1,0 +1,24 @@
+{
+  "paths": {
+    "linux": [],
+    "osx": [
+      // https://github.com/SublimeLinter/SublimeLinter/issues/1118#issuecomment-465179427
+      // Didn't seem to fix it, putting it here.  Bah.
+      // Ended up having to put it in linters.eslint.env.PATH as per the linked comment.
+      // TODO: Use 12.x?
+      "~/.nvm/versions/node/v10.15.0/bin"
+    ],
+    "windows": []
+  },
+  "linters": {
+    "eslint": {
+      "selector": "source.js, text.html.vue - meta.attribute-with-value",
+      "env": {
+        // https://github.com/SublimeLinter/SublimeLinter/issues/1118#issuecomment-465179427
+        // Ended up having to add it here, too.  Bah.
+        // Guess I'll need to hard-code the exact version I use on each.
+        "PATH": "~/.nvm/versions/node/v10.15.0/bin"
+      }
+    }
+  }
+}
