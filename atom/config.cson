@@ -29,6 +29,7 @@
       "ide-typescript"
       "fast-eslint"
       "ide-flowtype"
+      "arduino-upload"
     ]
     packagesWithKeymapsDisabled: [
       "emmet"
@@ -72,9 +73,7 @@
       "source.babel"
       "source.js-semantic"
     ]
-  "linter-ui-default":
-    panelHeight: 69
-    showPanel: true
+  "linter-ui-default": {}
   nuclide:
     "nuclide-file-tree": {}
     "nuclide-working-sets":
@@ -101,5 +100,7 @@
           ]
         }
       ]
+  "tree-view":
+    hideVcsIgnoredFiles: true
   welcome:
     showOnStartup: false
