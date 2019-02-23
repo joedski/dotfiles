@@ -6,24 +6,7 @@
 - clean: ['~']
 
 - link:
-    ~/.atom:
-    ~/.bash:
-    ~/.bash_profile:
-    ~/.bashrc:
-    ~/.editorconfig:
-    ~/.eslintrc.js:
     ~/.gitconfig:
-    ~/.gituserlist:
-    ~/.gitignore_global:
-    ~/.pythonrc:
-    ~/.shell:
-    ~/.vim:
-    ~/.vimrc:
-
-- shell:
-  # Kinda lame env detection...
-  # Windows path is "%APPDATA%\Sublime Text 3\Packages\User" but my setup stuff is all in bash...
-  - bash ~/.dotfiles/install.sublime-text-3.sh
 
 - shell:
   # the following have to run after linking ~/.gitconfig
@@ -38,3 +21,23 @@
   #   shell/plugins/
   #   vim/bundle/
   #   zsh/plugins/
+
+- link:
+    ~/.atom:
+    ~/.bash:
+    ~/.bash_profile:
+    ~/.bashrc:
+    ~/.editorconfig:
+    ~/.eslintrc.js:
+    ~/.gituserlist:
+    ~/.gitignore_global:
+    ~/.pythonrc:
+    ~/.shell:
+    ~/.vim:
+    ~/.vimrc:
+
+- shell:
+  # Kinda lame env detection...
+  # Windows path is "%APPDATA%\Sublime Text 3\Packages\User" but my setup stuff is all in bash...
+  - bash ~/.dotfiles/install.sublime-text-3.sh
+
