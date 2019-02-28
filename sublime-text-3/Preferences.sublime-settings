@@ -4,10 +4,11 @@
 	"highlight_unicode_color_name": "comment",
 	"ignored_packages":
 	[
+		"Babel",
 		"CoffeeComplete Plus (Autocompletion)",
 		"Color Scheme - Default",
 		"GitGutter",
-		"JavaScript",
+		"Markdown HTML Preview",
 		"SCSS",
 		"Vintage"
 	],
