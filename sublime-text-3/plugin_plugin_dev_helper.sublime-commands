@@ -1,0 +1,6 @@
+[
+  {
+    "caption": "Dev Helper: Show Active View .sel()",
+    "command": "plugin_dev_helper_show_view_sel"
+  }
+]
