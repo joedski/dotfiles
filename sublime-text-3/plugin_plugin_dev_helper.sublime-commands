@@ -2,5 +2,9 @@
   {
     "caption": "Dev Helper: Show Active View .sel()",
     "command": "plugin_dev_helper_show_view_sel"
+  },
+  {
+    "caption": "Dev Helper: Show Selected Lines and Lengths",
+    "command": "plugin_dev_helper_show_selected_lines_and_line_lengths"
   }
 ]
