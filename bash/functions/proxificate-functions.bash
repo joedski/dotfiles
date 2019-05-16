@@ -4,7 +4,8 @@
 # Tested in bash 3.2.57
 
 
-function proxificate() {
+
+proxificate() {
   local p_command=
   local p_command_args=()
   local p_show_help=
@@ -112,7 +113,131 @@ PROXIFICATE_DISPATCH_HELP
 
 
 
-function proxificate-init() {
+proxificate-list() {
+  while [[ ${#@} -ne 0 ]]; do
+    case "$1" in
+      ( help | -h | --help )
+        cat <<PROXIFICATE_INIT_HELP
+
+List the envs available.
+
+Usage:
+
+  proxificate list
+    List the envs available in '~/.proxificate/envs/'.
+
+  proxificate list --help
+  proxificate help list
+    Shows this message.
+
+PROXIFICATE_INIT_HELP
+        return 0
+        ;;
+
+      ( * )
+        shift
+        ;;
+    esac
+  done
+
+  if [[ ! -d ~/.proxificate || ! -d ~/.proxificate/envs ]]; then
+    echo "Could not find ~/.proxificate/envs/; have you run 'proxificate init' yet?"
+    return 1
+  fi
+
+  echo "Available envs:"
+  for env_file in ~/.proxificate/envs/*.env; do
+    env_name=$(basename "${env_file%.env}")
+    if [[ $env_name == "*" ]]; then
+      echo "(none)"
+    else
+      echo " - $env_name"
+    fi
+  done
+}
+
+
+
+proxificate-set-env() {
+  local p_env_name
+  local p_env_file_name
+  local p_env_file_path
+
+  while [[ ${#@} -ne 0 ]]; do
+    case "$1" in
+      ( help | -h | --help )
+        cat <<PROXIFICATE_INIT_HELP
+
+Set the env vars of the current environment.
+
+Usage:
+
+  proxificate set-env [env]
+    Sets env vars from the [env], where [env] is the name of an env
+    file in ~/.proxificate/envs/.  Writing the ".env" file extension is
+    optional, it will be automatically added if not present.
+
+  proxificate set-env --help
+  proxificate help set-env
+    Shows this message.
+
+PROXIFICATE_INIT_HELP
+        return 0
+        ;;
+
+      ( * )
+        if [[ -n $p_env_name ]]; then
+          echo "Please specify only one env name."
+          return 1
+        fi
+
+        p_env_name=$1
+        shift
+        ;;
+    esac
+  done
+
+  if [[ ! -d ~/.proxificate || ! -d ~/.proxificate/envs ]]; then
+    echo "Could not find ~/.proxificate/envs/; have you run 'proxificate init' yet?"
+    return 1
+  fi
+
+  if [[ -z $p_env_name ]]; then
+    echo "TODO: Support default env"
+    return 1
+  fi
+
+  if [[ $p_env_name != *.env ]]; then
+    p_env_file_name="${p_env_name}.env"
+  else
+    p_env_file_name=$p_env_name
+  fi
+
+  p_env_file_path="$HOME/.proxificate/envs/$p_env_file_name"
+
+  if [[ ! -f $p_env_file_path ]]; then
+    echo "Unknown env name '$p_env_name'.  Check the spelling, or check 'proxificate list'."
+    return 1
+  fi
+
+  while IFS='' read -r l <&42 || [[ -n $l ]]; do
+    # Skip empties
+    # Skip comment-lines
+    # Skip lines that aren't assignment-like
+    # ... it's not the most thorough.
+    if [[ -n $l && $l != "#"* && $l == *=* ]]; then
+      export "$l"
+      export_return=$?
+      if [[ $export_return -ne 0 ]]; then
+        return $export_return
+      fi
+    fi
+  done 42< "$envfile"
+}
+
+
+
+proxificate-init() {
   local p_dir=~/.proxificate
 
   while [[ ${#@} -ne 0 ]]; do
@@ -228,8 +353,8 @@ Env files can set any env vars, but should set at least the following:
 
 - \`PROXIFICATE_ENV_DESCRIPTION\` which is used by \`proxificate list\`
   to give a short description of this env.
-- \`PROXIFICATE_STRICT_SSL\` whether or not utilities such as \`git\`,
-  \`npm\`, or \`yarn\` should enable or disable \`strict-ssl\`.
+- \`PROXIFICATE_STRICT_SSL\` whether or not utilities such as \`npm\`, or
+  \`yarn\` should enable or disable \`strict-ssl\`.
   Set to any value to enable \`strict-ssl\` or to empty/no value to disable it.
 - \`HTTP_PROXY\`
 - \`http_proxy\`
