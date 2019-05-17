@@ -70,14 +70,16 @@ Available Commands:
   l
     List the envs available in the ~/.proxificate/envs/ dir.
 
-  set-env [env]
+  set-env {--quiet} [env]
     Export the env vars of the stated env into the current environment.
     If no env is stated, then use whatever is specified in
     the ~/.proxificate/default-env file.
 
-  exec <env> <command> {...command-args}
+  exec (<env> | --default-env) <command> {...command-args}
     Load a subshell with the env vars of the stated env then run the given
-    command in that subshell.
+    command in that subshell.  If you need to run a command that will change
+    the env of the current shell, just use 'proxify set-env' and then your
+    command, instead.
 
   sync-utils [env]
     Synchronize utility settings with the env vars in the given env.
@@ -114,6 +116,8 @@ PROXIFICATE_DISPATCH_HELP
 
 
 proxificate-list() {
+  local env_file
+
   while [[ ${#@} -ne 0 ]]; do
     case "$1" in
       ( help | -h | --help )
@@ -147,13 +151,101 @@ PROXIFICATE_INIT_HELP
 
   echo "Available envs:"
   for env_file in ~/.proxificate/envs/*.env; do
-    env_name=$(basename "${env_file%.env}")
-    if [[ $env_name == "*" ]]; then
-      echo "(none)"
+    if [[ -f $env_file ]]; then
+      (
+        proxificate-set-env -q -q "$(basename "$env_file")"
+        echo " - $(basename "${env_file%.env}") - $PROXIFICATE_ENV_DESCRIPTION"
+      )
     else
-      echo " - $env_name"
+      echo "(none)"
     fi
   done
+}
+
+
+
+proxificate-exec() {
+  local p_no_more_options
+  local p_env_name
+  local p_use_default_env
+  local p_command
+  local p_command_args
+
+  while [[ ${#@} -ne 0 ]]; do
+    case "$1" in
+      ( help | -h | --help )
+        cat <<PROXIFICATE_INIT_HELP
+
+Execute a command in a subshell with env vars of the named env.
+
+Usage:
+
+  proxificate exec (<env> | --default-env) [--] <cmd> [...cmd-args]
+    List the envs available in '~/.proxificate/envs/'.
+
+  proxificate list --help
+  proxificate help list
+    Shows this message.
+
+Options:
+
+  -d | --default-env
+    Use the default env.
+
+  --
+    Stop processing options, treat everything else as the command and args.
+
+PROXIFICATE_INIT_HELP
+        return 0
+        ;;
+
+      ( -- )
+        p_no_more_options=1
+        shift
+        ;;
+
+      ( -d | --default-env )
+        if [[ -z $p_no_more_options ]]; then
+          p_use_default_env=1
+          shift
+        else
+          if [[ -z $p_command ]]; then
+            p_command="$1"
+            shift
+          else
+            p_command_args=( "${p_command_args[@]}" "$1" )
+            shift
+          fi
+        fi
+        ;;
+
+      ( * )
+        if [[ -z $p_no_more_options && -z $p_use_default_env && -z $p_env_name ]]; then
+          p_env_name="$1"
+          shift
+        else
+          if [[ -z $p_command ]]; then
+            p_command="$1"
+            shift
+          else
+            p_command_args=( "${p_command_args[@]}" "$1" )
+            shift
+          fi
+        fi
+        ;;
+    esac
+  done
+
+  if [[ -z $p_command ]]; then
+    echo "Please specify a command.  See 'proxificate exec --help' for more."
+  fi
+
+  (
+    proxificate set-env -q -q "$p_env_name" || exit $?
+    "$p_command" "${p_command_args[@]}"
+  )
+
+  return $?
 }
 
 
@@ -162,6 +254,7 @@ proxificate-set-env() {
   local p_env_name
   local p_env_file_name
   local p_env_file_path
+  local p_quietness=0
 
   while [[ ${#@} -ne 0 ]]; do
     case "$1" in
@@ -172,17 +265,41 @@ Set the env vars of the current environment.
 
 Usage:
 
-  proxificate set-env [env]
+  proxificate set-env [-q] [env]
     Sets env vars from the [env], where [env] is the name of an env
     file in ~/.proxificate/envs/.  Writing the ".env" file extension is
     optional, it will be automatically added if not present.
+
+    NOTE: Specifying an empty name '' is the same as not specifying any
+    env.  Both mean to use the Default Env, if any.
 
   proxificate set-env --help
   proxificate help set-env
     Shows this message.
 
+Options:
+
+  -q | --quiet
+    Be quieter.  Can be specified multiple times, with the caveat that
+    trying to specify it like '-qqq' is not supported.  Use '-q -q -q'
+    instead.
+
+    No quietness/normal behavior:
+      Prints out a message stating the env name and each assignment.
+
+    --quiet:
+      Prints out only a message stating the env name.
+
+    --quiet --quiet:
+      Prints nothing.
+
 PROXIFICATE_INIT_HELP
         return 0
+        ;;
+
+      ( -q | --quiet )
+        ((p_quietness = p_quietness + 1))
+        shift
         ;;
 
       ( * )
@@ -203,21 +320,38 @@ PROXIFICATE_INIT_HELP
   fi
 
   if [[ -z $p_env_name ]]; then
-    echo "TODO: Support default env"
-    return 1
+    if [[ ! -f ~/.proxificate/default-env ]]; then
+      echo "No default-env is set.  To set a default-env, write the name of the desired env as the first line in the file '~/.proxificate/default-env'."
+      echo "Example:"
+      echo "  echo 'My-Env' > ~/.proxificate/default-env"
+      return 1
+    fi
+
+    read -r p_env_name < ~/.proxificate/default-env
+
+    if (($? != 0)); then
+      echo "Could not read from '~/.proxificate/default-env'.  Please check to make sure the first line is the desired env name."
+      return 1
+    fi
   fi
 
-  if [[ $p_env_name != *.env ]]; then
-    p_env_file_name="${p_env_name}.env"
+  if [[ $p_env_name == *.env ]]; then
+    p_env_file_name="${p_env_name%.env}"
   else
-    p_env_file_name=$p_env_name
+    p_env_file_name="$p_env_name"
   fi
 
-  p_env_file_path="$HOME/.proxificate/envs/$p_env_file_name"
+  p_env_file_path="$HOME/.proxificate/envs/${p_env_file_name}.env"
 
   if [[ ! -f $p_env_file_path ]]; then
     echo "Unknown env name '$p_env_name'.  Check the spelling, or check 'proxificate list'."
     return 1
+  fi
+
+  if ((p_quietness < 1)); then
+    echo "Setting environment to '$p_env_file_name':"
+  elif ((p_quietness < 2)); then
+    echo "Setting environment to '$p_env_file_name'."
   fi
 
   while IFS='' read -r l <&42 || [[ -n $l ]]; do
@@ -231,8 +365,14 @@ PROXIFICATE_INIT_HELP
       if [[ $export_return -ne 0 ]]; then
         return $export_return
       fi
+
+      if ((p_quietness < 1)); then
+        echo "  $l"
+      fi
     fi
-  done 42< "$envfile"
+  done 42< "$p_env_file_path"
+
+  export PROXIFICATE_ENV_NAME="$p_env_name"
 }
 
 
