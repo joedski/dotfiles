@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Functions around convenience-setting of proxy env vars.
+# This grew to far bigger than I thought it would, and is probably
+# a bit overkill.  Oh well.
 # Tested in bash 3.2.57
 
 
@@ -81,12 +83,36 @@ Available Commands:
     the env of the current shell, just use 'proxify set-env' and then your
     command, instead.
 
-  sync-utils [env]
+  sync-utils (<env> | --default-env | --current-env)
     Synchronize utility settings with the env vars in the given env.
-    If no env is stated, then use whatever is specified in
-    the ~/.proxificate/default-env file.
 
-    See \`proxificate help sync-utils\` for more.
+  current
+    Show the currently set env.
+
+Useful Files:
+
+  ~/.proxificate/
+    Configuration dir for proxificate.
+
+  ~/.proxificate/default-env
+    File whose first line names the default env.
+
+  ~/.proxificate/envs/*.env
+    Env files with env vars.
+
+  ~/.proxificate/sync-utils/*
+    Scripts to sync various utils to the current env.
+    Only files flagged as executable will be run.
+
+Limitations:
+
+  Probably won't work quite as expected if you name an env '--default-env'
+  or '--current-env'.
+
+  Many of these are implemented as functions that open subshells, so they're
+  not the most performant.  If you need to run many commands in a given env,
+  open a new shell yourself, run 'proxificate set-env ...' there, then
+  do your desired work.
 
 PROXIFICATE_DISPATCH_HELP
     else
@@ -101,7 +127,7 @@ PROXIFICATE_DISPATCH_HELP
       p_command=list
       ;;
 
-    ( init | set-env | exec | sync-utils )
+    ( init | set-env | exec | sync-utils | current )
       ;;
 
     ( * )
@@ -111,6 +137,20 @@ PROXIFICATE_DISPATCH_HELP
   esac
 
   "proxificate-${p_command}" "${p_command_args[@]}"
+}
+
+
+
+proxificate-current() {
+  if [[ -n $PROXIFICATE_ENV_NAME ]]; then
+    if [[ -n $PROXIFICATE_ENV_DESCRIPTION ]]; then
+      echo "Environment currently proxificated to: '$PROXIFICATE_ENV_NAME' - $PROXIFICATE_ENV_DESCRIPTION"
+    else
+      echo "Environment currently proxificated to: '$PROXIFICATE_ENV_NAME'"
+    fi
+  else
+    echo "Environment not currently proxificated."
+  fi
 }
 
 
@@ -160,6 +200,112 @@ PROXIFICATE_INIT_HELP
       echo "(none)"
     fi
   done
+}
+
+
+
+proxificate-sync-utils() {
+  local p_env_use
+  local p_env_name
+
+  while [[ ${#@} -ne 0 ]]; do
+    case "$1" in
+      ( help | -h | --help )
+        cat <<PROXIFICATE_INIT_HELP
+
+Synchronizes utils to the current env by running all executable scripts in
+the dir '~/.proxificate/sync-utils/'.
+
+Usage:
+
+  proxificate sync-utils (<env> | --default-env | --current-env)
+    Run all the sync-utils scripts.
+    You must specify one of <env>, --default-env, or --current-env.
+
+  proxificate list --help
+  proxificate help list
+    Shows this message.
+
+Options:
+
+  <env>
+    Sync utils to the named env's vars.
+
+  -d | --default-env
+    Sync utils to the vars of the env named in
+    the '~/.proxificate/default-env' file.
+
+  -c | --current-env
+    Sync utils to the vars of the current shell's env.
+
+PROXIFICATE_INIT_HELP
+        return 0
+        ;;
+
+      ( -d | --default-env )
+        if [[ -z $p_env_name ]]; then
+          p_env_use=default
+          shift
+        else
+          echo "Please specify only either '--default-env', '--current-env', or an env name."
+          return 1
+        fi
+        ;;
+
+      ( -c | --current-env )
+        if [[ -z $p_env_name ]]; then
+          p_env_use=current
+          shift
+        else
+          echo "Please specify only either '--default-env', '--current-env', or an env name."
+          return 1
+        fi
+        ;;
+
+      ( * )
+        if [[ -z $p_env_use ]]; then
+          p_env_name="$1"
+          shift
+        else
+          echo "Please specify only either '--default-env', '--current-env', or an env name."
+          return 1
+        fi
+        ;;
+    esac
+  done
+
+  if [[ ! -d ~/.proxificate/sync-utils ]]; then
+    echo "Could not find '~/.proxificate/sync-utils'.  Have you run 'proxificate init' yet?"
+    return 1
+  fi
+
+  if [[ -z $p_env_name && -z $p_env_use ]]; then
+    echo "Please specify either '--default-env', '--current-env', or an env name.  See 'proxificate sync-utils --help' for more."
+    return 1
+  fi
+
+  (
+    if [[ -n $p_env_name ]]; then
+      proxificate-set-env -q -q "$p_env_name" || exit $?
+    elif [[ $p_env_use == "default" ]]; then
+      proxificate-set-env -q -q || exit $?
+    fi
+    # else just use the current env.
+
+    echo "Syncing utils to env '$PROXIFICATE_ENV_NAME'..."
+    echo
+
+    for s in ~/.proxificate/sync-utils/*; do
+      if [[ -f $s && -x $s ]]; then
+        echo "Running '$(basename "$s")'..."
+        echo
+        "$s"
+        echo
+      fi
+    done
+  )
+
+  return $?
 }
 
 
@@ -261,7 +407,7 @@ proxificate-set-env() {
       ( help | -h | --help )
         cat <<PROXIFICATE_INIT_HELP
 
-Set the env vars of the current environment.
+Export env vars into the current environment.
 
 Usage:
 
@@ -281,7 +427,7 @@ Options:
 
   -q | --quiet
     Be quieter.  Can be specified multiple times, with the caveat that
-    trying to specify it like '-qqq' is not supported.  Use '-q -q -q'
+    trying to specify it like '-qq' is not supported.  Use '-q -q'
     instead.
 
     No quietness/normal behavior:
@@ -314,9 +460,13 @@ PROXIFICATE_INIT_HELP
     esac
   done
 
-  if [[ ! -d ~/.proxificate || ! -d ~/.proxificate/envs ]]; then
+  if [[ ! -d ~/.proxificate/envs ]]; then
     echo "Could not find ~/.proxificate/envs/; have you run 'proxificate init' yet?"
     return 1
+  fi
+
+  if [[ $p_env_name == -d || $p_env_name == --default-env ]]; then
+    p_env_name=
   fi
 
   if [[ -z $p_env_name ]]; then
@@ -348,10 +498,10 @@ PROXIFICATE_INIT_HELP
     return 1
   fi
 
-  if ((p_quietness < 1)); then
-    echo "Setting environment to '$p_env_file_name':"
-  elif ((p_quietness < 2)); then
-    echo "Setting environment to '$p_env_file_name'."
+  if ((p_quietness <= 0)); then
+    echo "Proxificating environment to '$p_env_file_name':"
+  elif ((p_quietness <= 1)); then
+    echo "Proxificating environment to '$p_env_file_name'."
   fi
 
   while IFS='' read -r l <&42 || [[ -n $l ]]; do
@@ -360,13 +510,9 @@ PROXIFICATE_INIT_HELP
     # Skip lines that aren't assignment-like
     # ... it's not the most thorough.
     if [[ -n $l && $l != "#"* && $l == *=* ]]; then
-      export "$l"
-      export_return=$?
-      if [[ $export_return -ne 0 ]]; then
-        return $export_return
-      fi
+      export "$l" || return $?
 
-      if ((p_quietness < 1)); then
+      if ((p_quietness <= 0)); then
         echo "  $l"
       fi
     fi
@@ -464,7 +610,7 @@ PROXIFICATE_DIR_README
   if [[ -d ~/.proxificate/envs ]]; then
     echo "~/.proxificate/envs/ already exists."
   elif [[ -e ~/.proxificate/envs ]]; then
-    echo "~/.proxificate/envs exists, but is not a directory.  Aborting."
+    echo "~/.proxificate/envs exists, but is not a directory.  Skipping."
   else
     mkdir ~/.proxificate/envs
     echo "created ~/.proxificate/envs/; be sure to add some .env files there."
@@ -520,13 +666,13 @@ PROXIFICATE_ENVS_README
   fi
 
   if [[ -d ~/.proxificate/sync-utils ]]; then
-    echo "~/.proxificate/sync-utils already exists."
+    echo "'~/.proxificate/sync-utils' already exists."
     echo "If you need to recreate the default scripts, remove or rename the sync-utils dir and rerun \`proxificate init\`."
   elif [[ -e ~/.proxificate/sync-utils ]]; then
-    echo "~/.proxificate/sync-utils exists, but is not a directory.  Aborting."
+    echo "~/.proxificate/sync-utils exists, but is not a directory.  Skipping."
   else
     mkdir ~/.proxificate/sync-utils
-    echo "created ~/.proxificate/sync-utils/"
+    echo "created '~/.proxificate/sync-utils/'"
     cat > ~/.proxificate/sync-utils/git.bash <<PROXIFICATE_INIT_SYNC_GIT
 #!/bin/bash
 # Sync git
@@ -554,7 +700,7 @@ else
 fi
 PROXIFICATE_INIT_SYNC_GIT
     chmod u+x ~/.proxificate/sync-utils/git.bash
-    echo "created default script ~/.proxificate/sync-utils/git.bash"
+    echo "created default script '~/.proxificate/sync-utils/git.bash'"
     cat > ~/.proxificate/sync-utils/npm.bash <<PROXIFICATE_INIT_SYNC_NPM
 #!/bin/bash
 # Sync npm
@@ -588,7 +734,7 @@ else
 fi
 PROXIFICATE_INIT_SYNC_NPM
     chmod u+x ~/.proxificate/sync-utils/npm.bash
-    echo "created default script ~/.proxificate/sync-utils/npm.bash"
+    echo "created default script '~/.proxificate/sync-utils/npm.bash'"
     cat > ~/.proxificate/sync-utils/yarn.bash <<PROXIFICATE_INIT_SYNC_YARN
 #!/bin/bash
 # Sync yarn
@@ -622,7 +768,7 @@ else
 fi
 PROXIFICATE_INIT_SYNC_YARN
     chmod u+x ~/.proxificate/sync-utils/yarn.bash
-    echo "created default script ~/.proxificate/sync-utils/yarn.bash"
+    echo "created default script '~/.proxificate/sync-utils/yarn.bash'"
     cat > ~/.proxificate/sync-utils/apm.bash <<PROXIFICATE_INIT_SYNC_APM
 #!/bin/bash
 # sync Atom's package manager apm
@@ -656,41 +802,7 @@ else
 fi
 PROXIFICATE_INIT_SYNC_APM
     chmod u+x ~/.proxificate/sync-utils/apm.bash
-    echo "created default script ~/.proxificate/sync-utils/apm.bash"
-    cat > ~/.proxificate/sync-utils/apm.bash <<PROXIFICATE_INIT_SYNC_APM
-#!/bin/bash
-# sync Atom's package manager apm
-
-if hash apm 2>/dev/null; then
-  if [[ -n \$HTTP_PROXY ]]; then
-    echo apm config set proxy \\""\$HTTP_PROXY"\\"
-    apm config set proxy "\$HTTP_PROXY"
-  else
-    echo apm config rm proxy
-    apm config rm proxy
-  fi
-
-  if [[ -n \$HTTPS_PROXY ]]; then
-    echo apm config set https-proxy \\""\$HTTPS_PROXY"\\"
-    apm config set https-proxy "\$HTTPS_PROXY"
-  else
-    echo apm config rm https-proxy
-    apm config rm https-proxy
-  fi
-
-  if [[ -n \$PROXIFICATE_STRICT_SSL ]]; then
-    echo apm config set strict-ssl true
-    apm config set strict-ssl true
-  else
-    echo apm config set strict-ssl false
-    apm config set strict-ssl false
-  fi
-else
-  echo "sync-utils/apm: skipping: could not find apm; you may need to start Atom then rerun this script"
-fi
-PROXIFICATE_INIT_SYNC_APM
-    chmod u+x ~/.proxificate/sync-utils/apm.bash
-    echo "created default script ~/.proxificate/sync-utils/apm.bash"
+    echo "created default script '~/.proxificate/sync-utils/apm.bash'"
     echo "Please review the created scripts and remove any you do not need."
   fi
 }
