@@ -625,10 +625,14 @@ description of that env.
 
 Env files used by \`proxificate\` are excruciatingly simple:
 
+- Leading spaces are not removed.
 - Lines starting with a hash \`#\` are ignored.
+    - If a line begins with spaces then a hash, it's treated as not beginning
+      with a hash because it begins with a space!
 - Lines not so-ignored that contain an equals sign \`=\` are treated as an
   env var assignment.
     - Do not put spaces around the \`=\`, spaces are treated literally.
+    - Do not put spaces in or around the var name.
     - Values are read literally, no escaping or quoting occurs.  Any escapes or
       quotes will appear literally in the value.
     - Multi-line values are not supported.
@@ -660,7 +664,7 @@ HTTP_PROXY=http://corporate.example.com:80
 http_proxy=http://corporate.example.com:80
 HTTPS_PROXY=http://corporate.example.com:80
 https_proxy=http://corporate.example.com:80
-NO_PROXY=api.example.com,internal.example.com
+NO_PROXY=api.example.com,internal.example.com,github.com
 \`\`\`
 PROXIFICATE_ENVS_README
   fi
