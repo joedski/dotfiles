@@ -128,7 +128,9 @@
   process = git-lfs filter-process
   required = true
 
-# Not actually sure where this came from... or how long it's been there.
+# UPDATE 2019-07-16: Okay, it does seem to be causing problems at work,
+# so I'm disabling it.
+# ORIGINAL NOTE: Not actually sure where this came from... or how long it's been there.
 # But it doesn't seem to be affecting access at work?
-[url "https://"]
-  insteadOf = git://
+#[url "https://"]
+#  insteadOf = git://
