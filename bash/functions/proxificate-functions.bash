@@ -5,6 +5,10 @@
 # a bit overkill.  Oh well.
 # Tested in bash 3.2.57
 
+# To start, source this file somewhere in your bashrc/bash_profile,
+# then run 'proxificate init'.
+# Run 'proxificate help' for help.
+
 
 
 proxificate() {
@@ -83,7 +87,8 @@ Available Commands:
     the env of the current shell, just use 'proxify set-env' and then your
     command, instead.
 
-  sync-utils (<env> | --default-env | --current-env)
+  sync-utils (<env> | --default-env | --current-env) [sync-script-name]
+  sync-utils --list
     Synchronize utility settings with the env vars in the given env.
 
   current
@@ -113,6 +118,21 @@ Limitations:
   not the most performant.  If you need to run many commands in a given env,
   open a new shell yourself, run 'proxificate set-env ...' there, then
   do your desired work.
+
+  For scripts, just use a subshell:
+
+    #!/usr/bin/env bash
+    # stuff out here in a different env.
+    (
+      # stuff in here with a particular env.
+      proxificate set-env "\${target_env_name}"
+      dosomething
+      doanotherthing
+      for x in *; do
+        allthethings "\$x"
+      done
+    )
+    # back to a different env.
 
 PROXIFICATE_DISPATCH_HELP
     else
@@ -207,6 +227,7 @@ PROXIFICATE_INIT_HELP
 proxificate-sync-utils() {
   local p_env_use
   local p_env_name
+  local p_script_use
 
   while [[ ${#@} -ne 0 ]]; do
     case "$1" in
@@ -222,9 +243,17 @@ Usage:
     Run all the sync-utils scripts.
     You must specify one of <env>, --default-env, or --current-env.
 
-  proxificate list --help
-  proxificate help list
+  proxificate sync-utils (<env> | --default-env | --current-env) <util-name>
+    Run only the named util sync script.
+
+  proxificate sync-utils --help
+  proxificate help sync-utils
     Shows this message.
+
+  proxificate sync-utils -l
+  proxificate sync-utils --list
+    Shows a list of all the sync utils available, and which will be executed
+    by default.
 
 Options:
 
@@ -242,8 +271,28 @@ PROXIFICATE_INIT_HELP
         return 0
         ;;
 
+      ( -l | -ls | --ls | --list )
+        if [[ ! -d ~/.proxificate/sync-utils ]]; then
+          echo "Dir '~/.proxificate/sync-utils' does not exist.  Have you run 'proxificate init' yet?"
+          return 1
+        fi
+
+        for s in ~/.proxificate/sync-utils/*; do
+          if [[ ! -e "$s" ]]; then
+            echo "No files found in '~/.proxificate/sync-utils'."
+            break
+          fi
+
+          if [[ -x "$s" ]]; then
+            echo " - $(basename "$s")"
+          fi
+        done
+
+        return 0
+        ;;
+
       ( -d | --default-env )
-        if [[ -z $p_env_name ]]; then
+        if [[ -z $p_env_name && -z $p_env_use ]]; then
           p_env_use=default
           shift
         else
@@ -253,7 +302,7 @@ PROXIFICATE_INIT_HELP
         ;;
 
       ( -c | --current-env )
-        if [[ -z $p_env_name ]]; then
+        if [[ -z $p_env_name && -z $p_env_use ]]; then
           p_env_use=current
           shift
         else
@@ -263,8 +312,11 @@ PROXIFICATE_INIT_HELP
         ;;
 
       ( * )
-        if [[ -z $p_env_use ]]; then
+        if [[ -z $p_env_name && -z $p_env_use ]]; then
           p_env_name="$1"
+          shift
+        elif [[ -z $p_script_use ]]; then
+          p_script_use="$1"
           shift
         else
           echo "Please specify only either '--default-env', '--current-env', or an env name."
@@ -284,6 +336,11 @@ PROXIFICATE_INIT_HELP
     return 1
   fi
 
+  if [[ -n $p_script_use && ! -x ~/.proxificate/sync-utils/"$p_script_use" ]]; then
+    echo "Could not find '~/.proxificate/sync-utils/$p_script_use'."
+    return 1
+  fi
+
   (
     if [[ -n $p_env_name ]]; then
       proxificate-set-env -q -q "$p_env_name" || exit $?
@@ -295,14 +352,21 @@ PROXIFICATE_INIT_HELP
     echo "Syncing utils to env '$PROXIFICATE_ENV_NAME'..."
     echo
 
-    for s in ~/.proxificate/sync-utils/*; do
-      if [[ -f $s && -x $s ]]; then
-        echo "Running '$(basename "$s")'..."
-        echo
-        "$s"
-        echo
-      fi
-    done
+    if [[ -n $p_script_use ]]; then
+      echo "Running '$p_script_use'..."
+      echo
+      ~/.proxificate/sync-utils/"$p_script_use"
+      echo
+    else
+      for s in ~/.proxificate/sync-utils/*; do
+        if [[ -f $s && -x $s ]]; then
+          echo "Running '$(basename "$s")'..."
+          echo
+          "$s"
+          echo
+        fi
+      done
+    fi
   )
 
   return $?
