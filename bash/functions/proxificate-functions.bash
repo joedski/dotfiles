@@ -812,16 +812,16 @@ if hash yarn 2>/dev/null; then
     echo yarn config set proxy \\""\$HTTP_PROXY"\\" --global
     yarn config set proxy "\$HTTP_PROXY" --global
   else
-    echo yarn config rm proxy --global
-    yarn config rm proxy --global
+    echo yarn config delete proxy --global
+    yarn config delete proxy --global
   fi
 
   if [[ -n \$HTTPS_PROXY ]]; then
     echo yarn config set https-proxy \\""\$HTTPS_PROXY"\\" --global
     yarn config set https-proxy "\$HTTPS_PROXY" --global
   else
-    echo yarn config rm https-proxy --global
-    yarn config rm https-proxy --global
+    echo yarn config delete https-proxy --global
+    yarn config delete https-proxy --global
   fi
 
   if [[ -n \$PROXIFICATE_STRICT_SSL ]]; then
