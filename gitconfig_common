@@ -1,3 +1,6 @@
+# A bunch of aliases (most of which I don't use I just copied them)
+# and some opinions to make git a bit stricter.
+
 [alias]
   exec = ! "exec"
   st = status -sb
@@ -117,10 +120,6 @@
 
 [core]
   excludesfile = ~/.gitignore_global
-
-# Allow local customizations in the .gitconfig_local file
-[include]
-  path = ~/.gitconfig_local
 
 [filter "lfs"]
   clean = git-lfs clean -- %f

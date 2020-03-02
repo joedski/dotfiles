@@ -6,13 +6,18 @@
 - clean: ['~']
 
 - link:
-    ~/.gitconfig:
+    ~/.gitconfig_common:
 
 - shell:
+  # Make sure .gitconfig_common is linked.
+  - >-
+    if [[ 0 != $(git config --get-all include.path | egrep '^\.gitconfig_common$' > /dev/null; echo $?) ]]; then
+        git config --global --add include.path .gitconfig_common
+    fi
   # the following have to run after linking ~/.gitconfig
   # Used for things like vim plugins.
   - git update-submodules
-  - echo "Be sure to run 'npm install -g eslint@^3 babel-eslint@^4' if you haven't already"'!'""
+  # - echo "Be sure to run 'npm install -g eslint@^3 babel-eslint@^4' if you haven't already"'!'""
   # - >-
   #   git cleanall -f
   #   emacs.d/vendor/
