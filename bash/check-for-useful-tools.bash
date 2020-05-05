@@ -1,5 +1,8 @@
 # Some commands I find useful.
 
+# Everyone likes homebrew but the way it wants you to munge perms
+# on /usr/local concerns me.
+
 USEFUL_TOOLS=(
   brew
   ack
@@ -7,6 +10,7 @@ USEFUL_TOOLS=(
   jq
   tree
   docker-compose
+  rustup
 )
 
 for x in "${USEFUL_TOOLS[@]}"; do
